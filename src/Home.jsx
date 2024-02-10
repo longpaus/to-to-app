@@ -3,23 +3,26 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 
-import Task from './Task'
+import Task from './components/Task/Task'
+import TaskList from './components/Task/TasksList'
+import CurrentTaskList from './components/Task/CurrentTaskList'
+import CompletedTaskList from './components/Task/CompletedTaskList'
 
 export default function Home() {
     const [tasks, setTasks] = useState([])
-    const [completedTasks,setCompletedTasks] = useState([])
-    const [newTaskValue,setNewTaskValue] = useState('')
+    const [completedTasks, setCompletedTasks] = useState([])
+    const [newTaskValue, setNewTaskValue] = useState('')
 
-    function onCompletedHandler(id){
+    function onCompletedHandler(id) {
         const target = tasks.find(task => task.time === id)
         const newTasks = tasks.filter(task => task.time !== id)
         setTasks(newTasks)
-        setCompletedTasks([target,...completedTasks])
+        setCompletedTasks([target, ...completedTasks])
     }
 
-    function onUnCompleteHandler(id){
+    function onUnCompleteHandler(id) {
         const target = completedTasks.find(task => task.time === id)
-        const newTasks = [...tasks,target].sort((a,b) => a.time - b.time).reverse()
+        const newTasks = [...tasks, target].sort((a, b) => a.time - b.time).reverse()
         setTasks(newTasks)
         const newCompletedTasks = completedTasks.filter(task => task.time !== id)
         setCompletedTasks(newCompletedTasks)
@@ -28,7 +31,7 @@ export default function Home() {
 
         if (e.key === 'Enter') {
             const currentTime = Date.now();
-            const newTask = { name: e.target.value, time: currentTime};
+            const newTask = { name: e.target.value, time: currentTime };
             setTasks([newTask, ...tasks]);
             setNewTaskValue('')
         }
@@ -42,6 +45,7 @@ export default function Home() {
                 flexDirection: 'column'
             }}>
             <TextField
+                autoFocus
                 size='small'
                 label='New task'
                 variant="outlined"
@@ -63,30 +67,8 @@ export default function Home() {
                 }}
             >
             </TextField>
-            <div style={{ marginTop: '20px' }}>
-
-                {tasks.map(task => (
-                    <Task
-                        key={task.time}
-                        id={task.time}
-                        name={task.name}
-                        onClickCheckBox={() => onCompletedHandler(task.time)}
-                    />
-                ))}
-            </div>
-
-            <div style={{marginTop:'20px'}}>
-                {completedTasks.length > 0 &&  (
-
-                    completedTasks.map(task => (
-                    <Task
-                        key={task.time}
-                        id={task.time}
-                        name={task.name}
-                        onClickCheckBox={() => onUnCompleteHandler(task.time)}
-                    />
-                )))}
-            </div>
+            <CurrentTaskList tasks={tasks} onClickCheckBox={onCompletedHandler} />
+            <CompletedTaskList tasks={completedTasks} onClickCheckBox={onUnCompleteHandler} />
 
         </div>
     )

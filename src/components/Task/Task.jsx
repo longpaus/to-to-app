@@ -3,24 +3,13 @@ import {
     Checkbox
 } from '@mui/material';
 import { useEffect, useState } from 'react'
-import BpCheckbox from './components/BPCheckBox';
-export default function Task({ time, name, onClickCheckBox }) {
+import BpCheckbox from '../BPCheckBox';
+export default function Task({ time, name, onClickCheckBox,isCompleted}) {
     const [backgroundColor, setBackgroundColor] = useState('#232323')
     const [borderStyle, setBorderStyle] = useState('none');
     const [currentTaskName,setCurrentTaskName] = useState(name)
-    function handleOnFocus() {
-        setBorderStyle('1px solid blue');
-    }
 
-    function handleOnBlur() {
-        setBorderStyle('none');
-    }
 
-    function handleOnChange(){
-        if(currentTaskName === ''){
-            setCurrentTaskName()
-        }
-    }
     return (
         <div
             style={{
@@ -30,13 +19,14 @@ export default function Task({ time, name, onClickCheckBox }) {
                 border: borderStyle,
             }}
             id={time}
-            onMouseOver={() => setBackgroundColor('#2e2e2e')}
-            onMouseLeave={() => setBackgroundColor('#232323')}
-            onFocus={handleOnFocus}
-            onBlur={handleOnBlur}
+            onMouseOver={() => setBorderStyle('1px solid white')}
+            onMouseLeave={() => setBorderStyle('none')}
+            // onFocus={handleOnFocus}
+            // onBlur={handleOnBlur}
         >
             <BpCheckbox
                 onClick={() => onClickCheckBox()}
+                checked={isCompleted}
             />
             <TextField
                 placeholder='No title'
