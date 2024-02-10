@@ -3,6 +3,7 @@ import {
     ListItemButton,
     ListItemText,
     Collapse,
+    styled
 } from '@mui/material'
 
 import {
@@ -13,14 +14,23 @@ import {
     useState,
 } from 'react'
 import Task from "./Task"
-export default function TaskList({ tasks, onClickCheckBox, isCompleted, listTitle }) {
+export default function TaskList({ tasks, onClickCheckBox, isCompleted, listTitle,onDelete }) {
     const [open, setOpen] = useState(true)
     return tasks.length > 0 && (
         <List style={{ marginTop: '20px', width: '100%' }}>
 
-            <ListItemButton sx={{ color: 'white', height: '20px', padding: 0 }} onClick={() => setOpen(!open)}>
+            <ListItemButton
+                sx={{
+                    color: 'white',
+                    height: '20px',
+                    padding: 0,
+                }}
+                onClick={() => setOpen(!open)}
+            >
                 {open ? <ExpandLess /> : <ExpandMore />}
-                <ListItemText primary={listTitle} />
+                <ListItemText >
+                    {listTitle}<NumberOfTasks>{open ? '' : ' ' + tasks.length}</NumberOfTasks>
+                </ListItemText>
             </ListItemButton>
 
             <Collapse in={open} timeout="auto" unmountOnExit>
@@ -32,6 +42,7 @@ export default function TaskList({ tasks, onClickCheckBox, isCompleted, listTitl
                             name={task.name}
                             onClickCheckBox={() => onClickCheckBox(task.time)}
                             isCompleted={isCompleted}
+                            onDelete={() => onDelete(task.time)}
                         />
 
                     ))}
@@ -41,3 +52,7 @@ export default function TaskList({ tasks, onClickCheckBox, isCompleted, listTitl
         </List>
     )
 }
+
+const NumberOfTasks = styled('span')({
+    color:'#505050'
+})

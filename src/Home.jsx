@@ -3,8 +3,6 @@ import {
 } from '@mui/material'
 import { useState } from 'react'
 
-import Task from './components/Task/Task'
-import TaskList from './components/Task/TasksList'
 import CurrentTaskList from './components/Task/CurrentTaskList'
 import CompletedTaskList from './components/Task/CompletedTaskList'
 
@@ -27,13 +25,26 @@ export default function Home() {
         const newCompletedTasks = completedTasks.filter(task => task.time !== id)
         setCompletedTasks(newCompletedTasks)
     }
-    function keyDownHandler(e) {
 
-        if (e.key === 'Enter') {
+    function onDeleteTaskHandler(setFunction, taskList) {
+        return (id) => {
+            const target = taskList.find(task => task.time === id)
+            const newList = taskList.filter(task => target.time !== task.time)
+            setFunction(newList)
+        }
+    }
+    function keyDownHandler(e) {
+        function addNewTask() {
             const currentTime = Date.now();
-            const newTask = { name: e.target.value, time: currentTime };
+            const newTask = {
+                name: e.target.value,
+                time: currentTime,
+            };
             setTasks([newTask, ...tasks]);
             setNewTaskValue('')
+        }
+        if (e.key === 'Enter') {
+            addNewTask()
         }
     }
     return (
@@ -67,8 +78,16 @@ export default function Home() {
                 }}
             >
             </TextField>
-            <CurrentTaskList tasks={tasks} onClickCheckBox={onCompletedHandler} />
-            <CompletedTaskList tasks={completedTasks} onClickCheckBox={onUnCompleteHandler} />
+            <CurrentTaskList
+                tasks={tasks}
+                onClickCheckBox={onCompletedHandler}
+                onDelete={onDeleteTaskHandler(setTasks, tasks)}
+            />
+            <CompletedTaskList
+                tasks={completedTasks}
+                onClickCheckBox={onUnCompleteHandler}
+                onDelete={onDeleteTaskHandler(setCompletedTasks, completedTasks)}
+            />
 
         </div>
     )
